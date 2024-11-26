@@ -4,7 +4,7 @@ regForm.addEventListener('submit', handleSubmit)
 
 regForm.cancel.addEventListener('click', goOut);
 
-function handleSubmit(e) {
+async function handleSubmit(e) {
   e.preventDefault();
 
   const { login, password, confirmPassword } = getFormData()
@@ -19,6 +19,14 @@ function handleSubmit(e) {
     if (problems) {
       throw { problem: problems.join(', ') }
     }
+
+    const init = {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({login, password})
+    }
+
+    const response = await fetch('/register', init)
 
     if (isOccupied(login)) {
       throw { problem: 'user already exists' }

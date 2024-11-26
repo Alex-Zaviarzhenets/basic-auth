@@ -1,16 +1,18 @@
 const loginForm = document.forms[0];
 
 
+
+
 loginForm.addEventListener('submit', handleSubmit);
 
 loginForm.cancel.addEventListener('click', goOut);
 
-function handleSubmit(e) {
+async function handleSubmit(e) {
   e.preventDefault();
 
   const { login, password } = getFormData()
 
-  if (check(login, password)) {
+  if (await check(login, password)) {
     goIn(login);
   } else {
     complaint('Incorrect login or password');
@@ -32,10 +34,18 @@ function goIn(userName) {
   location.href = '/profile.html?user=' + userName;
 }
 
+
+
 function check(login, password) {
-  return users.some(user => user.login === login && user.password === password);
+  const init = {
+    method: 'POST',
+    headers: { 'Content-type': 'aplication/json' },
+    body: JSON.stringify({ login, password })
+  }
+
+  return fetch('/login', init).then(response => response.ok)
 }
 
-function complaint(message) { 
-  alert(message) 
+function complaint(message) {
+  alert(message)
 }
